@@ -31,7 +31,13 @@ export default function LoginPage() {
   await login(email, password);
   navigate('/');
 } catch (err) {
-  showToast(err.response?.data?.error || t('common.error'), 'error');
+  console.log('LOGIN ERROR:', err);
+showToast(
+  err.response?.data?.error ||
+  err.message ||
+  'Login failed',
+  'error'
+);
 } finally {
   setLoading(false);
 }

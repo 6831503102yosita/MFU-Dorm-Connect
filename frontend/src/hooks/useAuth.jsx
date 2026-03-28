@@ -13,7 +13,11 @@ export function AuthProvider({ children }) {
     if (!token) { setLoading(false); return; }
     authAPI.me()
       .then(res => { setUser(res.data.user); applyUserLang(res.data.user); })
-      .catch(() => { localStorage.removeItem('mfu_token'); })
+      .catch(() => {
+  localStorage.removeItem('mfu_token');
+  localStorage.removeItem('mfu_user');
+  setUser(null);
+})
       .finally(() => setLoading(false));
   }, []);
 
@@ -40,9 +44,10 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem('mfu_token');
-    setUser(null);
-  }, []);
+  localStorage.removeItem('mfu_token');
+  localStorage.removeItem('mfu_user');
+  setUser(null);
+}, []);
 
   const updateUser = useCallback((updated) => {
     setUser(updated);

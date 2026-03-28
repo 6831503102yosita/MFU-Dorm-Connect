@@ -13,11 +13,18 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401) {
+    const currentPath = window.location.pathname;
+
+    if (
+      err.response?.status === 401 &&
+      currentPath !== '/login' &&
+      currentPath !== '/register'
+    ) {
       localStorage.removeItem('mfu_token');
       localStorage.removeItem('mfu_user');
       window.location.href = '/login';
     }
+
     return Promise.reject(err);
   }
 );
