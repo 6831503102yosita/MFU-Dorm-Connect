@@ -36,10 +36,14 @@ export default function RegisterPage() {
     try {
       await register({ full_name: form.full_name, student_id: form.student_id, email: form.email, password: form.password, dorm_building: form.dorm_building, room_number: form.room_number });
     } catch (err) {
-      showToast(err.response?.data?.error || t('common.error'), 'error');
-    } finally {
-      setLoading(false);
-    }
+  console.error("Register error:", err.response?.data || err.message);
+  setError(
+    err.response?.data?.error ||
+    err.message ||
+    "Something went wrong",
+    'error'
+  );
+}
   }
 
   const F = (k, label, type = 'text', placeholder = '') => (
