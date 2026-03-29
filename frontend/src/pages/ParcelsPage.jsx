@@ -68,7 +68,7 @@ export default function ParcelsPage() {
       <div className="topnav">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div><div className="topnav-title">{t('parcels.title')}</div><div className="topnav-sub">{current.length} {t('parcels.waiting')}</div></div>
-          <button className="btn btn-sm btn-red" style={{ marginTop: 4 }} onClick={() => setAddOpen(true)}>+ {t('parcels.addParcel')}</button>
+          {/* <button className="btn btn-sm btn-red" style={{ marginTop: 4 }} onClick={() => setAddOpen(true)}>+ {t('parcels.addParcel')}</button> */}
         </div>
       </div>
       <div style={{ display: 'flex', background: 'var(--bg)', padding: 3, margin: '14px 20px 0', borderRadius: 'var(--rads)' }}>
