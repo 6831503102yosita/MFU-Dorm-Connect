@@ -21,23 +21,41 @@ export default function MobileLayout() {
 
   return (
     <div className="phone">
-      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', paddingBottom: 'var(--nav)' }}>
+      <div
+        style={{
+          flex: 1,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          paddingBottom: 'var(--nav)',
+        }}
+      >
         <Outlet />
       </div>
+
       <nav className="bnav">
-        {NAV_ITEMS.map(item => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={`bnav-item${isActive(item) ? ' active' : ''}`}
-          >
-            <div className="bnav-dot" />
-            <div className="bnav-icon">
-              <item.icon size={22} strokeWidth={2} />
-            </div>
-            <div className="bnav-label">{t(item.labelKey)}</div>
-          </NavLink>
-        ))}
+        {NAV_ITEMS.map(item => {
+          const Icon = item.icon;
+          const active = isActive(item);
+
+          return (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={`bnav-item${active ? ' active' : ''}`}
+            >
+              <div className="bnav-dot" />
+              <div className="bnav-icon">
+                <Icon
+                  size={22}
+                  strokeWidth={2}
+                  color={active ? '#C40027' : '#7C8594'}
+                />
+              </div>
+              <div className="bnav-label">{t(item.labelKey)}</div>
+            </NavLink>
+          );
+        })}
       </nav>
     </div>
   );
