@@ -1,272 +1,286 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Bell, Package, Wrench, QrCode, ClipboardList } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { parcelsAPI, notificationsAPI } from '../services/api';
-import { StatusBar, Badge } from '../components/Shared';
+import { Badge } from '../components/Shared';
 
 export default function HomePage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
+
   const [parcels, setParcels] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
-    parcelsAPI.list(false).then(r => setParcels(r.data.parcels.slice(0, 2))).catch(() => {});
-    notificationsAPI.listAnnouncements(user?.dorm_building).then(r => setAnnouncements(r.data.announcements.slice(0, 1))).catch(() => {});
-    notificationsAPI.list().then(r => setUnread(r.data.unread_count)).catch(() => {});
+    parcelsAPI
+      .list(false)
+      .then((r) => setParcels((r.data.parcels || []).slice(0, 2)))
+      .catch(() => {});
+
+    notificationsAPI
+      .listAnnouncements(user?.dorm_building)
+      .then((r) => setAnnouncements((r.data.announcements || []).slice(0, 1)))
+      .catch(() => {});
+
+    notificationsAPI
+      .list()
+      .then((r) => setUnread(r.data.unread_count || 0))
+      .catch(() => {});
   }, [user]);
 
+  const firstName = user?.full_name?.split(' ')?.[0] || 'Yosita';
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? t('home.greeting') : hour < 18 ? t('home.greeting') : t('home.greeting');
+  const greeting =
+    hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+
+  const announcementText = announcements[0]
+    ? i18n.language === 'th'
+      ? announcements[0].body_th || announcements[0].body_en
+      : announcements[0].body_en || announcements[0].body_th
+    : 'No announcements';
 
   const FEATURES = [
     {
-      icon: '📦',
+      icon: Package,
       title: t('nav.parcels'),
       desc: t('parcels.title'),
       to: '/parcels',
-      cls: 'red',
     },
     {
-      icon: '🔧',
+      icon: Wrench,
       title: t('nav.repair'),
       desc: t('repair.subtitle'),
       to: '/repair',
-      cls: 'gold',
     },
     {
-      icon: '📲',
+      icon: QrCode,
       title: t('nav.qrCode'),
       desc: t('qr.subtitle'),
       to: '/qr',
-      cls: 'blue',
     },
     {
-      icon: '📋',
+      icon: ClipboardList,
       title: t('repair.myRepairsTitle'),
       desc: t('repair.title'),
       to: '/my-repairs',
-      cls: 'green',
     },
   ];
 
-  const iconBg = {
-    red: '#fa98a6',
-    gold: '#fa98a6',
-    blue: '#fa98a6',
-    green: '#fa98a6',
+  const cardStyle = {
+    background: '#FFFFFF',
+    borderRadius: 24,
+    border: 'none',
+    boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div
+      style={{
+        minHeight: '100%',
+        background: '#F3F4F6',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       {/* Header */}
       <div
         style={{
-          background: 'linear-gradient(135deg,#C8102E,#9B0C23)',
-          padding: '0 22px 22px',
-          flexShrink: 0,
-          position: 'relative',
-          overflow: 'hidden',
+          background: 'linear-gradient(90deg, #D6002A 0%, #C40027 50%, #B80024 100%)',
+          padding: '16px 22px 22px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
         }}
       >
         <div
           style={{
-            position: 'absolute',
-            top: -50,
-            right: -50,
-            width: 200,
-            height: 200,
-            background: 'rgba(255,255,255,.06)',
-            borderRadius: '50%',
-          }}
-        />
-
-        <div
-          style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '10px 0 16px',
-            position: 'relative',
+            alignItems: 'flex-start',
+            marginBottom: 18,
           }}
         >
           <div>
-            <div style={{ color: 'rgba(255,255,255,.75)', fontSize: 13 }}>
-              {greeting} 👋
+            <div
+              style={{
+                color: 'rgba(255,255,255,0.9)',
+                fontSize: 13,
+                marginBottom: 4,
+              }}
+            >
+              {greeting}
             </div>
-            <div style={{ color: '#fff', fontSize: 20, fontWeight: 800 }}>
-              {user?.full_name?.split(' ')[0]}{' '}
-              {user?.full_name?.split(' ')[1]?.[0]
-                ? user.full_name.split(' ')[1][0] + '.'
-                : ''}
+            <div
+              style={{
+                color: '#FFFFFF',
+                fontSize: 20,
+                fontWeight: 500,
+                lineHeight: 1.2,
+              }}
+            >
+              {firstName}
             </div>
           </div>
 
           <button
             onClick={() => navigate('/notifications')}
             style={{
-              width: 40,
-              height: 40,
-              background: 'rgba(255,255,255,.15)',
-              borderRadius: 13,
+              width: 36,
+              height: 36,
+              border: 'none',
+              background: 'transparent',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 18,
-              position: 'relative',
               cursor: 'pointer',
-              border: 'none',
-              flexShrink: 0,
+              position: 'relative',
             }}
           >
-            🔔
+            <Bell size={28} color="#FFFFFF" strokeWidth={2} />
             {unread > 0 && (
               <span
                 style={{
                   position: 'absolute',
-                  top: 8,
-                  right: 8,
+                  top: 4,
+                  right: 3,
                   width: 8,
                   height: 8,
-                  background: '#F5A623',
                   borderRadius: '50%',
-                  border: '2px solid #C8102E',
+                  background: '#FFFFFF',
                 }}
               />
             )}
           </button>
         </div>
 
-        {/* Announcement */}
-        {announcements[0] ? (
-          <div
-            style={{
-              background: 'rgba(255,255,255,.14)',
-              borderRadius: 13,
-              padding: '12px 14px',
-              border: '1px solid rgba(255,255,255,.2)',
-              display: 'flex',
-              gap: 10,
-            }}
-          >
-            <div style={{ fontSize: 18, flexShrink: 0 }}>📢</div>
-            <div>
-              <div
-                style={{
-                  display: 'inline-block',
-                  background: '#F5A623',
-                  color: '#7c3a00',
-                  fontSize: 10,
-                  fontWeight: 800,
-                  padding: '2px 8px',
-                  borderRadius: 50,
-                  marginBottom: 4,
-                }}
-              >
-                {t('home.announcementLabel')}
-              </div>
-              <div style={{ color: '#fff', fontSize: 13, lineHeight: 1.4 }}>
-                {t('lang') === 'th' ? announcements[0].body_th : announcements[0].body_en}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div
-            style={{
-              background: 'rgba(255,255,255,.1)',
-              borderRadius: 13,
-              padding: '12px 14px',
-              border: '1px solid rgba(255,255,255,.2)',
-            }}
-          >
-            <div style={{ color: 'rgba(255,255,255,.6)', fontSize: 13 }}>
-              {t('announcements.noAnnouncements')}
-            </div>
-          </div>
-        )}
+        <div
+          style={{
+            background: 'rgba(255,255,255,0.20)',
+            borderRadius: 12,
+            padding: '12px 16px',
+            color: 'rgba(255,255,255,0.88)',
+            fontSize: 13,
+          }}
+        >
+          {announcementText}
+        </div>
       </div>
 
-      {/* Scrollable body */}
-      <div className="scrl">
-        <div style={{ padding: '18px 18px 20px' }}>
+      {/* Body */}
+      <div className="scrl" style={{ flex: 1 }}>
+        <div style={{ padding: '22px 16px 24px' }}>
           {/* Services */}
-          <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--t1)' }}>
-              {t('home.services')}
-            </div>
+          <div
+            style={{
+              fontSize: 18,
+              fontWeight: 700,
+              color: '#161616',
+              marginBottom: 14,
+            }}
+          >
+            {t('home.services')}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 11, marginBottom: 22 }}>
-            {FEATURES.map(f => (
-              <button
-                key={f.to}
-                onClick={() => navigate(f.to)}
-                style={{
-                  background: 'var(--card)',
-                  borderRadius: 'var(--rad)',
-                  padding: '18px 15px',
-                  boxShadow: 'var(--sh1)',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  border: 'none',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'transform .15s',
-                }}
-                onMouseDown={e => (e.currentTarget.style.transform = 'scale(.96)')}
-                onMouseUp={e => (e.currentTarget.style.transform = '')}
-                onTouchStart={e => (e.currentTarget.style.transform = 'scale(.96)')}
-                onTouchEnd={e => (e.currentTarget.style.transform = '')}
-              >
-                <div
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 14,
+              marginBottom: 28,
+            }}
+          >
+            {FEATURES.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <button
+                  key={item.to}
+                  onClick={() => navigate(item.to)}
                   style={{
-                    width: 46,
-                    height: 46,
-                    borderRadius: 14,
-                    background: iconBg[f.cls],
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 21,
-                    marginBottom: 11,
+                    ...cardStyle,
+                    minHeight: 140,
+                    padding: '16px',
+                    textAlign: 'left',
+                    cursor: 'pointer',
                   }}
                 >
-                  {f.icon}
-                </div>
+                  <div
+                    style={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: 16,
+                      background: '#C40027',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: 14,
+                    }}
+                  >
+                    <Icon size={28} color="#FFFFFF" strokeWidth={2} />
+                  </div>
 
-                <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--t1)', marginBottom: 3 }}>
-                  {f.title}
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.4 }}>
-                  {f.desc}
-                </div>
-              </button>
-            ))}
+                  <div
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 700,
+                      color: '#111111',
+                      marginBottom: 4,
+                    }}
+                  >
+                    {item.title}
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: '#8A8A8A',
+                      lineHeight: 1.45,
+                    }}
+                  >
+                    {item.desc}
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Recent parcels */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--t1)' }}>
-              {t('home.recentParcels')}
-            </div>
-            <button
-              onClick={() => navigate('/parcels')}
-              style={{ fontSize: 13, color: 'var(--r)', fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer' }}
-            >
-              {t('common.seeAll')}
-            </button>
+          {/* Recent Parcels */}
+          <div
+            style={{
+              fontSize: 18,
+              fontWeight: 700,
+              color: '#161616',
+              marginBottom: 14,
+            }}
+          >
+            {t('home.recentParcels')}
           </div>
 
-          <div className="card" style={{ padding: '4px 14px 6px', marginBottom: 14 }}>
+          <div
+            style={{
+              ...cardStyle,
+              minHeight: parcels.length === 0 ? 64 : 'auto',
+              padding: parcels.length === 0 ? '22px 16px' : '8px 14px',
+              marginBottom: 20,
+              display: parcels.length === 0 ? 'flex' : 'block',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             {parcels.length === 0 ? (
-              <div style={{ padding: '16px 0', textAlign: 'center', color: 'var(--t2)', fontSize: 13 }}>
+              <div
+                style={{
+                  fontSize: 13,
+                  color: '#9A9A9A',
+                  textAlign: 'center',
+                }}
+              >
                 {t('parcels.noCurrentParcels')}
               </div>
             ) : (
-              parcels.map(p => (
+              parcels.map((p, index) => (
                 <div
                   key={p.id}
                   onClick={() => navigate('/parcels')}
@@ -274,78 +288,102 @@ export default function HomePage() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 12,
-                    padding: '10px 0',
-                    borderBottom: '1px solid var(--border)',
+                    padding: '12px 0',
+                    borderBottom:
+                      index !== parcels.length - 1 ? '1px solid #EEEEEE' : 'none',
                     cursor: 'pointer',
                   }}
                 >
                   <div
                     style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 10,
-                      background: '#FEE2E6',
+                      width: 38,
+                      height: 38,
+                      borderRadius: 12,
+                      background: '#FDE8EC',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: 17,
                       flexShrink: 0,
                     }}
                   >
-                    📮
+                    <Package size={18} color="#C40027" />
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)' }}>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: '#111827',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
                       {p.tracking_number}
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--t2)' }}>{p.carrier}</div>
+                    <div style={{ fontSize: 11, color: '#7A7A7A' }}>
+                      {p.carrier}
+                    </div>
                   </div>
+
                   <Badge status={p.status} />
                 </div>
               ))
             )}
           </div>
 
-          {/* Public board shortcut */}
+          {/* Public Parcel Board */}
           <button
             onClick={() => navigate('/public-board')}
             style={{
               width: '100%',
-              background: 'linear-gradient(135deg,#1e3a5f,#111827)',
-              borderRadius: 'var(--rad)',
-              padding: 16,
+              border: 'none',
+              borderRadius: 20,
+              background: 'linear-gradient(90deg, #173D67 0%, #0A2346 100%)',
+              padding: '16px 18px',
               display: 'flex',
               alignItems: 'center',
               gap: 14,
-              cursor: 'pointer',
-              border: 'none',
               textAlign: 'left',
+              cursor: 'pointer',
             }}
           >
             <div
               style={{
-                width: 44,
-                height: 44,
-                borderRadius: 13,
-                background: 'rgba(255,255,255,.15)',
+                width: 48,
+                height: 48,
+                borderRadius: 14,
+                background: 'rgba(255,255,255,0.20)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: 20,
                 flexShrink: 0,
               }}
             >
-              📋
+              <ClipboardList size={24} color="#FFFFFF" />
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ color: '#fff', fontSize: 14, fontWeight: 800 }}>
+
+            <div>
+              <div
+                style={{
+                  color: '#FFFFFF',
+                  fontSize: 15,
+                  fontWeight: 700,
+                  marginBottom: 2,
+                }}
+              >
                 {t('home.publicBoard')}
               </div>
-              <div style={{ color: 'rgba(255,255,255,.6)', fontSize: 12 }}>
+              <div
+                style={{
+                  color: 'rgba(255,255,255,0.72)',
+                  fontSize: 12,
+                }}
+              >
                 {t('home.publicBoardDesc')}
               </div>
             </div>
-            <div style={{ color: 'rgba(255,255,255,.5)', fontSize: 16 }}>›</div>
           </button>
         </div>
       </div>
