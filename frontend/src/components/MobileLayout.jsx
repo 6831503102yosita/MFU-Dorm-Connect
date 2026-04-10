@@ -1,14 +1,14 @@
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import { Home, Package, Wrench, QrCode, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const NAV_ITEMS = [
-  { to: '/', icon: '🏠', labelKey: 'nav.home', exact: true },
-  { to: '/parcels', icon: '📦', labelKey: 'nav.parcels' },
-  { to: '/repair', icon: '🔧', labelKey: 'nav.repair' },
-  { to: '/qr', icon: '📲', labelKey: 'nav.qrCode' },
-  { to: '/profile', icon: '👤', labelKey: 'nav.profile' },
+  { to: '/', icon: Home, labelKey: 'nav.home', exact: true },
+  { to: '/parcels', icon: Package, labelKey: 'nav.parcels' },
+  { to: '/repair', icon: Wrench, labelKey: 'nav.repair' },
+  { to: '/qr', icon: QrCode, labelKey: 'nav.qrCode' },
+  { to: '/profile', icon: User, labelKey: 'nav.profile' },
 ];
-
-import { useTranslation } from 'react-i18next';
 
 export default function MobileLayout() {
   const { t } = useTranslation();
@@ -32,7 +32,9 @@ export default function MobileLayout() {
             className={`bnav-item${isActive(item) ? ' active' : ''}`}
           >
             <div className="bnav-dot" />
-            <div className="bnav-icon">{item.icon}</div>
+            <div className="bnav-icon">
+              <item.icon size={22} strokeWidth={2} />
+            </div>
             <div className="bnav-label">{t(item.labelKey)}</div>
           </NavLink>
         ))}
