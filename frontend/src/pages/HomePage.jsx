@@ -60,11 +60,11 @@ export default function HomePage() {
   ];
 
   const iconBg = {
-    red: '#fa98a6',
-    gold: '#fa98a6',
-    blue: '#fa98a6',
-    green: '#fa98a6',
-  };
+  red: '#C8102E',
+  gold: '#C8102E',
+  blue: '#C8102E',
+  green: '#C8102E',
+};
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
