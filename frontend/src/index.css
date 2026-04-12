@@ -78,11 +78,8 @@ body {
   display: flex;
   padding-bottom: 8px;
   z-index: 100;
-  box-shadow: 0 -4px 20px rgba(121, 112, 112, 0.06);
+  box-shadow: 0 -4px 20px rgba(94, 93, 93, 0.06);
 }
-
-.bnav-item.active .bnav-label { color: var(--r); }
-
 .bnav-item {
   flex: 1;
   display: flex;
