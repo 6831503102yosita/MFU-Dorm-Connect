@@ -60,10 +60,10 @@ export default function HomePage() {
   ];
 
   const iconBg = {
-  red: '#F5A623',
-  gold: '#F5A623',
-  blue: '#F5A623',
-  green: '#F5A623',
+  red: '#C8102E',
+  gold: '#C8102E',
+  blue: '#C8102E',
+  green: '#C8102E',
 };
 
   return (
