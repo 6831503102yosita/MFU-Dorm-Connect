@@ -69,7 +69,6 @@ body {
 .topnav-sub { font-size: 13px; color: var(--t2); }
 
 /* Bottom nav */
-/* Bottom nav */
 .bnav {
   position: fixed;
   bottom: 0; left: 0; right: 0;
