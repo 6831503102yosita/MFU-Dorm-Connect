@@ -133,6 +133,15 @@ body {
 .bnav-item.active .bnav-label {
   color: #6B7280; /* active เป็นเทาเข้ม */
 }
+.bnav-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke: #6B7280 !important;
+}
+
+.bnav-item.active .bnav-icon svg {
+  stroke: #6B7280 !important;
+}
 .bnav-item {
   flex: 1;
   display: flex;
