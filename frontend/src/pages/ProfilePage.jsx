@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   User,
   ImagePlus,
-  PencilLine,
+  SquarePen,
   Lock,
   Globe,
   Bell,
@@ -21,6 +21,7 @@ import { StatusBar, Modal, Toast, DORM_BUILDINGS } from '../components/Shared';
 import { useToast } from '../hooks/useToast';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
+const ICON_COLOR = '#B13A2E';
 
 export default function ProfilePage() {
   const { t, i18n } = useTranslation();
@@ -167,15 +168,13 @@ export default function ProfilePage() {
       label: t('settings.account'),
       items: [
         {
-          icon: PencilLine,
-          bg: 'si-blue',
+          icon: SquarePen,
           label: t('settings.editProfile'),
           desc: t('settings.editProfileDesc'),
           action: openEdit,
         },
         {
           icon: Lock,
-          bg: 'si-green',
           label: t('settings.changePassword'),
           desc: t('settings.changePasswordDesc'),
           action: () => {
@@ -191,14 +190,12 @@ export default function ProfilePage() {
       items: [
         {
           icon: Globe,
-          bg: 'si-gold',
           label: t('settings.language'),
           desc: i18n.language === 'th' ? 'ภาษาไทย' : 'English',
           action: () => setLangOpen(true),
         },
         {
           icon: Bell,
-          bg: 'si-red',
           label: t('settings.notifications'),
           desc: t('settings.notificationsDesc'),
           action: () => setNotifOpen(true),
@@ -210,20 +207,17 @@ export default function ProfilePage() {
       items: [
         {
           icon: FileText,
-          bg: 'si-gray',
           label: t('settings.privacyPolicy'),
           desc: t('settings.pdpaCompliant'),
           action: () => setPrivacyOpen(true),
         },
         {
           icon: Info,
-          bg: 'si-gray',
           label: t('settings.aboutApp'),
           action: () => setAboutOpen(true),
         },
         {
           icon: LogOut,
-          bg: 'si-red',
           label: t('settings.logout'),
           action: () => setLogoutConfirm(true),
           danger: true,
@@ -259,8 +253,14 @@ export default function ProfilePage() {
             )}
           </div>
 
-          <div className="avatar-edit">
-            <ImagePlus size={14} strokeWidth={1.8} color="#B13A2E" />
+          <div
+            className="avatar-edit"
+            style={{
+              background: '#fff',
+              border: '2px solid #fff',
+            }}
+          >
+            <ImagePlus size={14} strokeWidth={1.8} color="#9DB6D4" />
             <input type="file" accept="image/*" onChange={handleAvatarUpload} />
           </div>
         </div>
@@ -306,7 +306,7 @@ export default function ProfilePage() {
                   justifyContent: 'center',
                 }}
               >
-                <Icon size={16} strokeWidth={1.8} color="#B13A2E" />
+                <Icon size={18} strokeWidth={1.8} color={ICON_COLOR} />
               </span>
 
               <div>
@@ -335,7 +335,7 @@ export default function ProfilePage() {
                   fontWeight: 800,
                   color: 'var(--t3)',
                   letterSpacing: 0.8,
-                  textTransform: 'uppercase',
+                  textTransform: 'none',
                   marginBottom: 7,
                   paddingLeft: 4,
                 }}
@@ -360,18 +360,26 @@ export default function ProfilePage() {
                         cursor: 'pointer',
                       }}
                     >
-                      <div className={`settings-icon ${item.bg}`}>
+                      <div
+                        style={{
+                          width: 26,
+                          minWidth: 26,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
                         <Icon
-                          size={20}
+                          size={22}
                           strokeWidth={1.8}
-                          color={item.danger ? '#DC2626' : '#B13A2E'}
+                          color={item.danger ? ICON_COLOR : ICON_COLOR}
                         />
                       </div>
 
                       <div className="si-txt" style={{ flex: 1 }}>
                         <div
                           className="settings-label"
-                          style={{ color: item.danger ? '#DC2626' : 'var(--t1)' }}
+                          style={{ color: 'var(--t1)' }}
                         >
                           {item.label}
                         </div>
@@ -479,7 +487,17 @@ export default function ProfilePage() {
                 background: 'none',
               }}
             >
-              <Globe size={20} strokeWidth={1.8} color="#B13A2E" />
+              <div
+                style={{
+                  width: 26,
+                  minWidth: 26,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Globe size={22} strokeWidth={1.8} color={ICON_COLOR} />
+              </div>
               <div className="si-txt" style={{ flex: 1 }}>
                 <div className="settings-label">{l.name}</div>
               </div>
@@ -542,7 +560,7 @@ export default function ProfilePage() {
 
       <Modal open={aboutOpen} onClose={() => setAboutOpen(false)} title={t('about.title')}>
         <div style={{ textAlign: 'center', padding: '10px 0 20px' }}>
-          <Building2 size={50} strokeWidth={1.8} color="#B13A2E" />
+          <Building2 size={50} strokeWidth={1.8} color={ICON_COLOR} />
           <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--t1)', marginTop: 12 }}>
             {t('common.appName')}
           </div>
@@ -575,7 +593,23 @@ export default function ProfilePage() {
 
       {toast && <Toast key={toast.key} message={toast.message} type={toast.type} onClose={clearToast} />}
 
-      <style>{`.last-no-border:last-child { border-bottom: none !important; }`}</style>
+      <style>{`
+        .last-no-border:last-child { border-bottom: none !important; }
+
+        /* เอาพื้นหลังไอคอนออก */
+        .settings-icon {
+          background: transparent !important;
+          width: 26px !important;
+          height: 26px !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+        }
+
+        .si-red, .si-blue, .si-green, .si-gold, .si-gray {
+          background: transparent !important;
+        }
+      `}</style>
     </div>
   );
 }
